@@ -3,159 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dîvânu Lugâti't-Türk Kelime Haritası</title>
-
+<title>Dîvânu Lugâti't-Türk • En Büyük Kelime Haritası</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
 <style>
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   background: #f5efe2;
   color: #35271b;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
-
 header {
-  padding: 18px;
-  text-align: center;
-  color: #fff3d5;
   background: #63351e;
+  color: #fff3d5;
+  text-align: center;
+  padding: 16px 12px;
+  flex-shrink: 0;
 }
-
-header h1 { margin: 0 0 8px; font-size: 25px; }
-header p { margin: 0; font-size: 14px; }
+header h1 { margin: 0 0 4px; font-size: 24px; }
+header p { margin: 0; font-size: 13px; opacity: 0.9; }
 
 main {
   display: grid;
-  grid-template-columns: 350px 1fr;
-  min-height: 78vh;
+  grid-template-columns: 380px 1fr;
+  flex: 1;
+  min-height: 0;
 }
 
 #side {
   padding: 16px;
   overflow-y: auto;
-  max-height: 78vh;
+  background: #f7f3ea;
   border-right: 2px solid #d5c3a4;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-#map { min-height: 78vh; }
+#map {
+  flex: 1;
+  min-height: 55vh;
+}
 
 input, select {
   width: 100%;
-  padding: 11px;
-  margin: 6px 0 12px;
+  padding: 10px 12px;
   border: 1px solid #b9a485;
   border-radius: 7px;
   background: #fffdf8;
   font-size: 14px;
+  color: #35271b;
 }
 
-.word {
-  padding: 10px;
-  margin: 7px 0;
+.word-card {
+  padding: 10px 12px;
+  margin: 6px 0;
   border: 1px solid #ddc9a9;
   border-radius: 7px;
   background: #fffaf0;
   cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
 }
 
-.word:hover, .word:focus {
+.word-card:hover, .word-card:focus {
   background: #f0dfbd;
-  outline: 2px solid #a66b34;
+  border-color: #a66b34;
+  outline: none;
 }
 
-.word strong { color: #823c1e; font-size: 16px; }
-.word small { display: block; margin-top: 5px; color: #665744; }
+.word-card strong {
+  color: #823c1e;
+  font-size: 15px;
+}
+
+.word-card small {
+  display: block;
+  margin-top: 3px;
+  color: #665744;
+  font-size: 12px;
+}
 
 #detail {
   padding: 12px;
-  margin-bottom: 12px;
   background: #fffaf0;
   border: 2px solid #966139;
   border-radius: 8px;
-  line-height: 1.6;
+  line-height: 1.5;
+  font-size: 14px;
 }
 
-#detail h3 { margin-top: 0; color: #823c1e; }
+#detail h3 { margin-top: 0; color: #823c1e; font-size: 17px; }
 
 .note {
   padding: 12px;
-  margin-top: 15px;
   background: #eee2cb;
   border-radius: 8px;
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.5;
+  color: #4f4638;
 }
 
 footer {
-  padding: 14px;
+  padding: 10px;
   text-align: center;
   background: #63351e;
   color: #fff3d5;
   font-size: 12px;
+  flex-shrink: 0;
 }
 
-.popup { line-height: 1.6; }
-.popup h3 { margin: 0; color: #823c1e; }
+.popup { line-height: 1.5; font-size: 13px; }
+.popup h3 { margin: 0 0 6px; color: #823c1e; font-size: 15px; }
+.popup ul { margin: 5px 0 0 15px; padding: 0; }
 
 @media(max-width: 750px) {
-  main { grid-template-columns: 1fr; }
-  #map { min-height: 55vh; }
-  #side { max-height: none; }
+  body { height: auto; }
+  main { display: flex; flex-direction: column-reverse; height: auto; }
+  #map { height: 50vh; min-height: 300px; }
+  #side { max-height: none; border-right: none; border-top: 2px solid #d5c3a4; }
 }
 </style>
 </head>
-
 <body>
 
 <header>
   <h1>Dîvânu Lugâti't-Türk</h1>
-  <p>Kelimelerin İzinde: 11. Yüzyıl Türk Dünyası</p>
+  <p>Kelimelerin İzinde: 11. Yüzyıl Türk Dünyası — Kapsamlı Master Kelime Haritası</p>
 </header>
 
 <main>
   <section id="side">
-    <h3>Eski Türkçe Kelime Sözlüğü</h3>
+    <h3 style="margin:0 0 4px; color:#63351e;">Kelime ve Bölge Sözlüğü</h3>
+    <div style="font-size: 13px; color: #5c554b;">Kaşgarlı Mahmud'un 1072–1077 yıllarında kaleme aldığı eserdeki yüzlerce kelimeyi coğrafi bölgeleriyle inceleyin.</div>
 
-    <label for="search">Kelime veya anlam ara</label>
-    <input id="search" type="search" placeholder="Örn. tamu, cennet, tağ...">
+    <label for="search">Kelime, anlam veya bölge ara</label>
+    <input id="search" type="search" placeholder="Örn. tamu, tulum, tavşan, Kaşgar...">
 
-    <label for="filter">Kelime türü</label>
+    <label for="filter">Kelime durumu</label>
     <select id="filter">
       <option value="all">Bütün kelimeler</option>
-      <option value="rare">Günümüzde az kullanılan</option>
-      <option value="living">Günümüzde yaşayan biçimler</option>
-      <option value="changed">Anlamı veya biçimi değişenler</option>
+      <option value="rare">Günümüzde az kullanılan / tarihî</option>
+      <option value="living">Günümüzde yaşayan</option>
+      <option value="changed">Biçimi veya anlamı değişen</option>
+    </select>
+
+    <label for="regionFilter">Bölge filtrele</label>
+    <select id="regionFilter">
+      <option value="all">Bütün bölgeler</option>
     </select>
 
     <div id="detail">
       <h3>Haritayı keşfet!</h3>
-      Bir bölgedeki işaretçiye veya aşağıdaki kelimelere tıkla.
-      Kelimelerin anlamlarını ve tarihî coğrafya bilgilerini incele.
+      Haritadaki bir bölge işaretçisine ya da aşağıdaki kelime listesine tıklayarak detaylı açıklamaları, günümüzdeki karşılıklarını ve coğrafi bağlamı inceleyebilirsin.
     </div>
 
-    <p id="count"></p>
+    <div id="count" style="font-weight: bold; font-size: 13px; color: #63351e;"></div>
     <div id="list"></div>
 
     <div class="note">
-      <b>Önemli kaynak notu:</b> Haritadaki noktalar tarihî Türk
-      topluluklarının yaklaşık yaşadığı bölgeleri gösterir.
-      Kelime anlamları ve tarihî biçimler akademik sözlüklerle
-      ayrıca doğrulanmalıdır.
+      <b>Coğrafya ve Kaynak Notu:</b> Haritadaki işaretçiler tarihî Türk topluluklarının yaklaşık yaşadığı bölgeleri gösterir. Kelimelerin belirli bir bölgede verilmesi yalnızca eserde o boyla ilişkilendirildiğini gösterir; kesin köken veya münhasıran o coğrafyada kullanıldığı anlamına gelmez.
     </div>
   </section>
 
-  <div id="map" aria-label="Tarihî Türk topluluklarının haritası"></div>
+  <div id="map" aria-label="Tarihî Türk toplulukları haritası"></div>
 </main>
 
 <footer>
-  Dîvânu Lugâti't-Türk • Kaşgarlı Mahmud • 1072–1077
+  Dîvânu Lugâti't-Türk • Kaşgarlı Mahmud • 1072–1077 • Master Harita Sürümü
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
 const regions = [
   {
@@ -163,152 +183,219 @@ const regions = [
     name: "Kaşgar – Karahanlı / Hakaniye",
     coords: [39.47, 75.99],
     modern: "Günümüz Çin'inin Sincan Uygur Özerk Bölgesi",
-    description: "Kaşgarlı Mahmud'un yaşadığı, Karahanlı başkenti ve kültür çevresi."
+    description: "Kaşgarlı Mahmud'un yaşadığı, Karahanlı başkenti ve Hakaniye Türkçesinin kültür çevresi."
   },
   {
     id: "oguz",
     name: "Oğuzlar – Seyhun çevresi",
     coords: [44.8, 65.5],
     modern: "Günümüz Kazakistan'ında Seyhun aşağı havzası (Cend–Yenikent)",
-    description: "Oğuz topluluklarının tarihî yerleşim alanlarından biri."
+    description: "Oğuz topluluklarının tarihî yerleşim alanları ve Seyhun boyları."
   },
   {
     id: "kipcak",
     name: "Kıpçaklar – İtil ve Yayık bozkırları",
     coords: [49.5, 52.0],
     modern: "Batı Kazakistan ve Hazar'ın kuzeyindeki bozkırlar",
-    description: "Orta Çağ Kıpçak topluluklarıyla ilişkilendirilen bozkır alanı."
+    description: "Orta Çağ Kıpçak topluluklarıyla ilişkilendirilen bozkır kuşağı."
   },
   {
     id: "cigil",
     name: "Çiğil ve Yağma çevresi",
     coords: [42.4, 77.2],
     modern: "Isık Göl ve çevresi, günümüz Kırgızistan'ı",
-    description: "Kaşgarlı Mahmud'un anlattığı Türk topluluklarının yaşadığı alanlardan biri."
+    description: "Orta Asya'daki tarihî Türk topluluklarından Çiğil ve Yağma boylarının yurdu."
   },
   {
     id: "argu",
     name: "Argu – Talas ve Fergana",
     coords: [42.5, 72.2],
     modern: "Kırgızistan, Özbekistan ve çevresindeki tarihî alanlar",
-    description: "Argu topluluğu ve dil özellikleriyle ilişkilendirilen çevre."
+    description: "Argu topluluğu ve kendine özgü dil özellikleriyle bilinen çevre."
   },
   {
     id: "uygur",
     name: "Uygurlar – Turfan ve Beşbalık",
     coords: [42.95, 89.18],
     modern: "Günümüz Çin'inin Sincan bölgesi",
-    description: "Uygur tarih ve kültürünün önemli merkezlerinden bazıları."
+    description: "Uygur tarih ve kültürünün, yazı geleneklerinin önemli merkezleri."
   },
   {
     id: "kirgiz",
     name: "Kırgızlar – Yenisey",
     coords: [53.7, 91.4],
     modern: "Güney Sibirya'daki Yenisey havzası",
-    description: "Eski Kırgız tarihinin önemli coğrafi alanlarından biri."
+    description: "Eski Kırgız tarihinin ve bozkır kültürünün önemli coğrafi alanı."
   },
   {
     id: "bulgar",
     name: "İtil Bulgarları ve Suvarlar",
     coords: [54.9, 49.1],
     modern: "İtil (Volga) havzası, günümüz Rusya'sı",
-    description: "Orta Çağ İtil Bulgar ve Suvar topluluklarıyla ilişkilendirilen alan."
+    description: "Orta Çağ İtil Bulgar ve Suvar topluluklarıyla ilişkilendirilen bölge."
   },
   {
     id: "pecenek",
     name: "Peçenekler – Karadeniz'in kuzeyi",
     coords: [47.5, 34.0],
     modern: "Karadeniz'in kuzeyindeki bozkırlar",
-    description: "Peçeneklerin tarihî hareket alanlarından biri."
+    description: "Peçeneklerin tarihî hareket alanları ve batı bozkırları."
   },
   {
     id: "tuhsi",
     name: "Tuhsiler – Tanrı Dağları çevresi",
     coords: [43.5, 81.0],
     modern: "Orta Asya'da Tanrı Dağları ve çevresi",
-    description: "Tuhsi topluluğuyla ilişkilendirilen yaklaşık coğrafi alan."
+    description: "Tuhsi topluluğuyla ilişkilendirilen dağlık coğrafi alan."
+  },
+  {
+    id: "ortaasya",
+    name: "Orta Asya – Genel Türk dili coğrafyası",
+    coords: [43.0, 68.0],
+    modern: "Kazakistan, Kırgızistan, Özbekistan ve geniş bölge",
+    description: "Kesin köken yeri eserde dar bir boyla sınırlandırılmayan kelimeler için genel referans."
   }
 ];
 
 const words = [
-  // Karahanlı / Kaşgar
-  {word:"tağ", meaning:"dağ", today:"dağ", status:"changed", region:"karahanli", note:"Ses değişimi gösteren temel coğrafi terim."},
-  {word:"ata", meaning:"baba, ata", today:"ata", status:"living", region:"karahanli", note:"Çağdaş Türkçede kullanılmaya devam eder."},
-  {word:"suw", meaning:"su", today:"su", status:"changed", region:"karahanli", note:"Tarihî yazım ile günümüz biçimi farklıdır."},
-  {word:"yol", meaning:"yol", today:"yol", status:"living", region:"karahanli", note:"Günümüzde yaygın biçimde yaşar."},
-  {word:"kız", meaning:"genç kadın, kız", today:"kız", status:"living", region:"karahanli", note:"Temel akrabalık ve kişi adı söz varlığı."},
-  {word:"tengri", meaning:"gök; Tanrı", today:"Tanrı", status:"changed", region:"karahanli", note:"Anlam ve kullanım bağlamı değişmiştir."},
-  {word:"kut", meaning:"kutluluk, talih, iktidar meşruiyeti", today:"kut; kutlu", status:"changed", region:"karahanli", note:"Eski Türk kültüründe önemli bir kavram."},
-  {word:"tamu", meaning:"cehennem", today:"Cehennem", status:"rare", region:"karahanli", note:"Eski Türkçe dinî söz varlığı."},
-  {word:"uçmak", meaning:"cennet", today:"Uçma eylemi (anlam değişti)", status:"changed", region:"karahanli", note:"Tarihî metinlerde farklı anlamda kullanılmıştır."},
-  {word:"budun", meaning:"halk, topluluk", today:"Budun (tarihî/bilimsel)", status:"rare", region:"karahanli", note:"Eski Türkçe topluluk ve siyaset kavramı."},
-  {word:"öğüt", meaning:"öğüt, nasihat", today:"öğüt", status:"changed", region:"karahanli", note:"Tarihî ve çağdaş biçimleri karşılaştırılabilir."},
-  {word:"bit-", meaning:"bitmek veya büyüyüp gelişmek", today:"bitmek", status:"changed", region:"karahanli", note:"Fiil anlamı ve tarihî yazım."},
-  {word:"künç", meaning:"tarihî sözlükteki anlamı kaynak üzerinden doğrulanmalı", today:"Kesin karşılık verilmemiştir", status:"rare", region:"karahanli", note:"Kaynak doğrulaması yapılmalıdır."},
+  // --- Kaşgar / Karahanlı ---
+  {word: "tağ", meaning: "dağ", today: "dağ", status: "changed", region: "karahanli", note: "Ses değişimi gösteren temel coğrafi terim."},
+  {word: "ata", meaning: "baba, ata", today: "ata", status: "living", region: "karahanli", note: "Çağdaş Türkçede kullanılmaya devam eder."},
+  {word: "suw", meaning: "su", today: "su", status: "changed", region: "karahanli", note: "Tarihî yazım ile günümüz biçimi farklıdır."},
+  {word: "yol", meaning: "yol", today: "yol", status: "living", region: "karahanli", note: "Günümüzde yaygın biçimde yaşar."},
+  {word: "kız", meaning: "genç kadın, kız", today: "kız", status: "living", region: "karahanli", note: "Temel akrabalık ve kişi adı söz varlığı."},
+  {word: "tengri", meaning: "gök; Tanrı", today: "Tanrı", status: "changed", region: "karahanli", note: "Anlam ve kullanım bağlamı değişmiştir."},
+  {word: "kut", meaning: "kutluluk, talih, iktidar meşruiyeti", today: "kut; kutlu", status: "changed", region: "karahanli", note: "Eski Türk kültüründe önemli bir kavram."},
+  {word: "tamu", meaning: "cehennem", today: "Cehennem", status: "rare", region: "karahanli", note: "Eski Türkçe dinî söz varlığı."},
+  {word: "uçmak", meaning: "cennet", today: "Uçma eylemi (anlam değişti)", status: "changed", region: "karahanli", note: "Tarihî metinlerde farklı anlamda kullanılmıştır."},
+  {word: "budun", meaning: "halk, topluluk", today: "Budun (tarihî/bilimsel)", status: "rare", region: "karahanli", note: "Eski Türkçe topluluk ve siyaset kavramı."},
+  {word: "öğüt", meaning: "öğüt, nasihat", today: "öğüt", status: "changed", region: "karahanli", note: "Tarihî ve çağdaş biçimleri karşılaştırılabilir."},
+  {word: "bit-", meaning: "bitmek veya büyüyüp gelişmek", today: "bitmek", status: "changed", region: "karahanli", note: "Fiil anlamı ve tarihî yazım."},
+  {word: "tudun", meaning: "Su dağıtımını düzenleyen görevli; köy reisi", today: "Tarihî idari terim", status: "rare", region: "karahanli", note: "Görev ve toplumsal düzenle ilgili tarihî terim."},
+  {word: "kılınç", meaning: "Davranış, huy, tutum", today: "Kılınış / tutum", status: "changed", region: "karahanli", note: "Eski metinlerdeki kullanımlarıyla karşılaşılır."},
+  {word: "beglenmek", meaning: "Evlenmek (eserde kaydedilen anlamıyla)", today: "Evlenmek", status: "rare", region: "karahanli", note: "Günümüz Türkiye Türkçesinde yaygın değildir."},
+  {word: "açıglık", meaning: "acılık; acı olma durumu", today: "Acılık", status: "rare", region: "karahanli", note: "Eski biçim."},
+  {word: "açıgsamak", meaning: "canı ekşi istemek", today: "—", status: "rare", region: "karahanli", note: "Bugün bu biçimde yaygın değildir."},
+  {word: "açıgsımak", meaning: "ekşimek, acılaşmak", today: "Ekşimek", status: "rare", region: "karahanli", note: "Standart dilde seyrektir."},
+  {word: "adaş", meaning: "arkadaş, dost", today: "Adaş (aynı adı taşıyan)", status: "changed", region: "karahanli", note: "Anlam daralması yaşamıştır."},
+  {word: "Sü", meaning: "Asker, ordu", today: "Eski / askerî kullanım", status: "rare", region: "karahanli", note: "Tarihî askerî söz varlığı."},
+  {word: "Sav", meaning: "Söz, haber veya atasözü", today: "Tarihî / bilimsel", status: "rare", region: "karahanli", note: "Bağlama göre değerlendirilir."},
+  {word: "Yarlık", meaning: "Buyruk, ferman", today: "Ferman", status: "rare", region: "karahanli", note: "Tarihî devlet ve yönetim söz varlığı."},
+  {word: "Beg", meaning: "Bey, yönetici", today: "Bey", status: "changed", region: "karahanli", note: "Tarihî biçim ile çağdaş biçim."},
+  {word: "Yağı", meaning: "Düşman", today: "Yağı (edebî)", status: "rare", region: "karahanli", note: "Tarihî metinlerde düşman anlamı."},
+  {word: "Kün", meaning: "Gün, güneş", today: "Gün", status: "changed", region: "karahanli", note: "Ses değişimi incelenebilir."},
+  {word: "Ana", meaning: "Anne", today: "Ana", status: "living", region: "karahanli", note: "Günümüzde yaşayan kelime."},
+  {word: "Arslan", meaning: "Aslan", today: "Aslan / özel adlar", status: "changed", region: "karahanli", note: "Tarihî biçim."},
+  {word: "Kök", meaning: "Gök, mavi; kök", today: "Gök, kök", status: "changed", region: "karahanli", note: "Anlam ilişkileri."},
+  {word: "Yağmur", meaning: "Yağmur", today: "Yağmur", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Kış", meaning: "Kış mevsimi", today: "Kış", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Yaz", meaning: "Yaz mevsimi", today: "Yaz", status: "living", region: "karahanli", note: "Mevsim adı."},
+  {word: "Tuz", meaning: "Tuz", today: "Tuz", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Kuş", meaning: "Kuş", today: "Kuş", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Ekin", meaning: "Ekili tahıl, ekin", today: "Ekin", status: "living", region: "karahanli", note: "Tarım söz varlığı."},
+  {word: "Yürek", meaning: "Kalp, gönül", today: "Yürek", status: "living", region: "karahanli", note: "Gerçek ve mecaz anlamda."},
+  {word: "Süt", meaning: "Süt", today: "Süt", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Kol", meaning: "Kol", today: "Kol", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Taş", meaning: "Taş", today: "Taş", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Tuğ", meaning: "Sancak veya tuğ", today: "Tuğ", status: "rare", region: "karahanli", note: "Yönetim sembolü."},
+  {word: "Öz", meaning: "Kendi, öz", today: "Öz", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Ev", meaning: "Ev", today: "Ev", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Yıldız", meaning: "Yıldız", today: "Yıldız", status: "living", region: "karahanli", note: "Gök cismi."},
+  {word: "Kar", meaning: "Kar", today: "Kar", status: "living", region: "karahanli", note: "Doğa olayı."},
+  {word: "Ay", meaning: "Ay; zaman birimi", today: "Ay", status: "living", region: "karahanli", note: "Birden fazla anlam."},
+  {word: "Oğul", meaning: "Evlat, erkek çocuk", today: "Oğul", status: "living", region: "karahanli", note: "Akrabalık terimi."},
+  {word: "Bıçak", meaning: "Kesici araç", today: "Bıçak", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Koyun", meaning: "Koyun", today: "Koyun", status: "living", region: "karahanli", note: "Yaşayan kelime."},
+  {word: "Ayak", meaning: "Ayak", today: "Ayak", status: "living", region: "karahanli", note: "Anatomik terim."},
 
-  // Oğuz
-  {word:"yıl", meaning:"yıl", today:"yıl", status:"living", region:"oguz", note:"Zaman ölçü birimi."},
-  {word:"göz", meaning:"göz", today:"göz", status:"living", region:"oguz", note:"Anatomik söz varlığı."},
-  {word:"ekin", meaning:"ekilmiş tahıl veya ekin", today:"ekin", status:"living", region:"oguz", note:"Tarım söz varlığı."},
-  {word:"arslan", meaning:"aslan", today:"arslan (özel adlarda)", status:"changed", region:"oguz", note:"Tarihî biçim günümüzde bazı adlarda korunmuştur."},
-  {word:"kuş", meaning:"kuş", today:"kuş", status:"living", region:"oguz", note:"Günümüzde yaşayan kelime."},
-  {word:"sav", meaning:"söz, haber, atasözü", today:"sav (tarihî/bilimsel)", status:"rare", region:"oguz", note:"Bağlama göre değerlendirilir."},
-  {word:"beg", meaning:"bey, yönetici", today:"bey", status:"changed", region:"oguz", note:"Biçimi zamanla değişmiştir."},
-  {word:"yagı", meaning:"düşman", today:"yağı (edebî)", status:"rare", region:"oguz", note:"Tarihî metinlerde düşman anlamındadır."},
-  {word:"ev", meaning:"ev", today:"ev", status:"living", region:"oguz", note:"Günümüzde yaşayan kelime."},
+  // --- Oğuz ---
+  {word: "uragut", meaning: "Kadın", today: "—", status: "rare", region: "oguz", note: "Tarihî metinlerde görülür."},
+  {word: "katun / hatun", meaning: "Hükümdar eşi veya saygın kadın", today: "Hatun", status: "changed", region: "oguz", note: "Kültürel bağlamda yaşar."},
+  {word: "kalın", meaning: "Evlilikte aileler arasında verilen başlık / mal", today: "Başlık parası", status: "changed", region: "oguz", note: "Bugünkü 'kalın' sıfatıyla karıştırılmamalı."},
+  {word: "adın", meaning: "başka, ayrı", today: "Başka / ayrı", status: "rare", region: "oguz", note: "Eski söz varlığı."},
+  {word: "aduk", meaning: "tanınmayan, bilinmeyen", today: "—", status: "rare", region: "oguz", note: "Eski söz varlığı."},
+  {word: "açuklug", meaning: "koçak; huyu güzel", today: "—", status: "rare", region: "oguz", note: "Tarihî açıklama."},
+  {word: "yıl", meaning: "yıl", today: "yıl", status: "living", region: "oguz", note: "Zaman ölçü birimi."},
+  {word: "göz", meaning: "göz", today: "göz", status: "living", region: "oguz", note: "Anatomik terim."},
 
-  // Kıpçak
-  {word:"at", meaning:"at", today:"at", status:"living", region:"kipcak", note:"Bozkır kültürünün temel binek hayvanı."},
-  {word:"ot", meaning:"ateş / ot", today:"ateş / ot", status:"changed", region:"kipcak", note:"Bağlama göre ateş veya bitki anlamı taşır."},
-  {word:"tuz", meaning:"tuz", today:"tuz", status:"living", region:"kipcak", note:"Günümüzde yaşayan kelime."},
-  {word:"yaz", meaning:"yaz mevsimi", today:"yaz", status:"living", region:"kipcak", note:"Mevsim adları."},
-  {word:"kış", meaning:"kış mevsimi", today:"kış", status:"living", region:"kipcak", note:"Günümüzde yaşayan kelime."},
-  {word:"sü", meaning:"asker, ordu", today:"Eski kullanım", status:"rare", region:"kipcak", note:"Tarihî askerî söz varlığında görülür."},
-  {word:"yarlık", meaning:"buyruk, ferman", today:"Tarihî kullanım", status:"rare", region:"kipcak", note:"Tarihî devlet ve yönetim söz varlığı."},
+  // --- Kıpçak ---
+  {word: "çıgay", meaning: "Yoksul, fakir", today: "Fakir", status: "rare", region: "kipcak", note: "Tarihî metinlerde geçer."},
+  {word: "tul tugsak", meaning: "Dul kalmış kadınla ilgili ifade", today: "—", status: "rare", region: "kipcak", note: "Eski aile hayatı terimi."},
+  {word: "yurç", meaning: "Kadının küçük erkek kardeşi", today: "Kayınbirader (özel)", status: "rare", region: "kipcak", note: "Akrabalık terimi."},
+  {word: "örtmen", meaning: "dam, üst örtü / satıh", today: "Çatı / örtü", status: "rare", region: "kipcak", note: "Mimari terim."},
+  {word: "ötünç", meaning: "ödünç, borç", today: "Ödünç", status: "changed", region: "kipcak", note: "Günümüzde 'ödünç' olarak yaşar."},
+  {word: "yolk-", meaning: "bırakmak, salıvermek", today: "Bırakmak", status: "rare", region: "kipcak", note: "Eski fiil biçimi."},
+  {word: "at", meaning: "at", today: "at", status: "living", region: "kipcak", note: "Binek hayvanı."},
+  {word: "ot", meaning: "ateş / ot", today: "ateş / ot", status: "changed", region: "kipcak", note: "Bağlama göre değişir."},
 
-  // Yağma / Çigil
-  {word:"bal", meaning:"bal", today:"bal", status:"living", region:"cigil", note:"Doğal gıda maddesi."},
-  {word:"ay", meaning:"ay; gök cismi veya zaman birimi", today:"ay", status:"living", region:"cigil", note:"Birden fazla anlamıyla yaşamaktadır."},
-  {word:"gün", meaning:"gün, gündüz", today:"gün", status:"living", region:"cigil", note:"Zaman kavramı."},
-  {word:"el", meaning:"il, ülke", today:"il / el", status:"changed", region:"cigil", note:"Tarihî metinlerde ülke anlamı."},
-  {word:"oğul", meaning:"erkek çocuk, evlat", today:"oğul", status:"living", region:"cigil", note:"Akrabalık terimi."},
+  // --- Çiğil ve Yağma ---
+  {word: "kunçuy", meaning: "Soylu veya yüksek statülü kadın", today: "—", status: "rare", region: "cigil", note: "Hükümdar ailesinden kadın."},
+  {word: "kurtga", meaning: "Yaşlı kadın", today: "—", status: "rare", region: "cigil", note: "Eski akrabalık/yaş terimi."},
+  {word: "sinil", meaning: "Erkeğin küçük kız kardeşi", today: "Kız kardeş", status: "rare", region: "cigil", note: "Akrabalık terimi."},
+  {word: "bal", meaning: "bal", today: "bal", status: "living", region: "cigil", note: "Doğal gıda."},
+  {word: "gün", meaning: "gün, gündüz", today: "gün", status: "living", region: "cigil", note: "Zaman kavramı."},
+  {word: "el", meaning: "il, ülke", today: "il / el", status: "changed", region: "cigil", note: "Tarihî devlet kavramı."},
 
-  // Argu
-  {word:"yürek", meaning:"kalp, gönül", today:"yürek", status:"living", region:"argu", note:"Gerçek ve mecaz anlamda kullanılır."},
-  {word:"ana", meaning:"anne", today:"ana", status:"living", region:"argu", note:"Günümüzde yaşayan bir kelime."},
-  {word:"süt", meaning:"süt", today:"süt", status:"living", region:"argu", note:"Günümüzde yaşayan kelime."},
-  {word:"kol", meaning:"kol", today:"kol", status:"living", region:"argu", note:"Günümüzde yaşayan kelime."},
-  {word:"taş", meaning:"taş", today:"taş", status:"living", region:"argu", note:"Günümüzde yaşayan kelime."},
+  // --- Argu (Talas ve Fergana) ---
+  {word: "çiğit", meaning: "Pamuk çekirdeği, pamuk tohumu", today: "Çiğit", status: "living", region: "argu", note: "Tarım terimi, ağızlarda yaşar."},
+  {word: "awurta", meaning: "Sütanne", today: "Sütanne", status: "rare", region: "argu", note: "Seyrek kullanılan tarihî terim."},
+  {word: "tünür", meaning: "Kadının anne, baba ve kardeşleri", today: "Dünür", status: "changed", region: "argu", note: "Akrabalık terimi."},
+  {word: "adaklık", meaning: "üzüm çardağına ayak yapılacak ağaç", today: "Asma direği", status: "rare", region: "argu", note: "Tarım terimi."},
+  {word: "açınmak", meaning: "doyumluk/yem vermek", today: "—", status: "rare", region: "argu", note: "Bağlama göre değişen fiil."},
+  {word: "yürek", meaning: "kalp, gönül", today: "yürek", status: "living", region: "argu", note: "Gerçek ve mecaz."},
 
-  // Uygur
-  {word:"tuğ", meaning:"sancak, tuğ", today:"tuğ (resmî sembol)", status:"rare", region:"uygur", note:"Tarihî yönetim ve askerlik söz varlığı."},
-  {word:"bitig", meaning:"yazı, yazılı belge, kitap", today:"bitik (eski)", status:"rare", region:"uygur", note:"Eski Türk yazı kültürüyle ilişkili biçim."},
-  {word:"öz", meaning:"kendi, öz", today:"öz", status:"living", region:"uygur", note:"Günümüzde de kullanılan biçim."},
-  {word:"balık", meaning:"balık; tarihî şehir anlamı", today:"balık (hayvan)", status:"changed", region:"uygur", note:"Anlam değişmesi için dikkat çekici örnek."},
+  // --- Uygur ---
+  {word: "bürüncük", meaning: "Kadının yüzünü örtmek için kullandığı örtü", today: "Yaşmak / peçe", status: "rare", region: "uygur", note: "Giyim kuşam terimi."},
+  {word: "saraguç", meaning: "Örtünme veya başı örtme aracı", today: "Örtü", status: "rare", region: "uygur", note: "Giyim terimi."},
+  {word: "tolgag", meaning: "Küpe", today: "Küpe", status: "rare", region: "uygur", note: "Takı adı."},
+  {word: "bayık", meaning: "doğru, gerçek", today: "Gerçek", status: "rare", region: "uygur", note: "Eski sıfat."},
+  {word: "kölük", meaning: "yük hayvanı / binek hayvanı", today: "Binek hayvanı", status: "rare", region: "uygur", note: "Tarihî terim."},
+  {word: "yüğrük", meaning: "çevik, hızlı yürüyen (at)", today: "Yüğrük", status: "rare", region: "uygur", note: "Edebî / ağız kullanımı."},
+  {word: "bitig", meaning: "yazı, yazılı belge, kitap", today: "Bitik", status: "rare", region: "uygur", note: "Yazı kültürü terimi."},
+  {word: "balık", meaning: "balık; tarihî metinlerde şehir", today: "Balık (hayvan)", status: "changed", region: "uygur", note: "Önemli anlam değişmesi."},
 
-  // Kırgız
-  {word:"ög", meaning:"akıl veya anne anlamı", today:"—", status:"rare", region:"kirgiz", note:"Bağlama göre değerlendirilir."},
-  {word:"böri", meaning:"kurt", today:"börü", status:"rare", region:"kirgiz", note:"Tarihî Türkçe söz varlığı."},
-  {word:"kümüş", meaning:"gümüş", today:"gümüş", status:"changed", region:"kirgiz", note:"Ses değişimi incelenebilir."},
-  {word:"yağız", meaning:"koyu renkli, esmer", today:"yağız", status:"living", region:"kirgiz", note:"Betimleyici kullanım."},
-  {word:"kök", meaning:"gök, mavi; kök", today:"gök, kök", status:"changed", region:"kirgiz", note:"Anlam ilişkileri bulunur."},
+  // --- Kırgız (Yenisey) ---
+  {word: "kükü / küküy", meaning: "Teyze için kullanılan akrabalık sözü", today: "Teyze", status: "rare", region: "kirgiz", note: "Akrabalık sözü."},
+  {word: "başın", meaning: "Evlilikle bağlantılı maddi ödeme / mihr", today: "Mihr", status: "rare", region: "kirgiz", note: "Hukuki/aile terimi."},
+  {word: "yaldrık", meaning: "Süslenmiş kadın", today: "—", status: "rare", region: "kirgiz", note: "Niteleme sözü."},
+  {word: "böri", meaning: "kurt", today: "Börü", status: "rare", region: "kirgiz", note: "Türk lehçelerinde yaşar."},
+  {word: "yağız", meaning: "koyu renkli, esmer", today: "Yağız", status: "living", region: "kirgiz", note: "Betimleyici kelime."},
+  {word: "ög", meaning: "akıl; bazı kayıtlarda anne", today: "Akıl / anne", status: "rare", region: "kirgiz", note: "Çok anlamlı eski kelime."},
 
-  // Bulgar - Suvar
-  {word:"yer", meaning:"yer, toprak", today:"yer", status:"living", region:"bulgar", note:"Coğrafi terim."},
-  {word:"kün", meaning:"gün; güneş", today:"gün", status:"changed", region:"bulgar", note:"Tarihî ses uyumu."},
-  {word:"saç", meaning:"saç", today:"saç", status:"living", region:"bulgar", note:"Anatomik söz varlığı."},
+  // --- İtil Bulgarları ve Suvarlar ---
+  {word: "emgek", meaning: "sıkıntı, zahmet, eziyet", today: "Emek", status: "changed", region: "bulgar", note: "'Emek' kelimesiyle köken ilişkili."},
+  {word: "tünek", meaning: "Gece konaklanan yer, barınak", today: "Tünek", status: "changed", region: "bulgar", note: "Barınak anlamı."},
+  {word: "kerek", meaning: "Gerekli olan şey; ihtiyaç", today: "Gerek", status: "changed", region: "bulgar", note: "'Gerek' biçiminde yaşar."},
+  {word: "kökürçkün", meaning: "güvercin", today: "Güvercin", status: "changed", region: "bulgar", note: "Eski kuş adı."},
+  {word: "çit", meaning: "kamış veya dikenden yapılan çit", today: "Çit", status: "living", region: "bulgar", note: "Yapı terimi."},
+  {word: "yer", meaning: "yer, toprak", today: "yer", status: "living", region: "bulgar", note: "Coğrafi terim."},
+  {word: "saç", meaning: "saç", today: "saç", status: "living", region: "bulgar", note: "Anatomik terim."},
 
-  // Peçenek
-  {word:"ayak", meaning:"ayak", today:"ayak", status:"living", region:"pecenek", note:"Günümüzde yaşayan kelime."},
-  {word:"bıçak", meaning:"kesici araç", today:"bıçak", status:"living", region:"pecenek", note:"Günümüzde yaşayan kelime."},
-  {word:"koyun", meaning:"koyun", today:"koyun", status:"living", region:"pecenek", note:"Günümüzde yaşayan kelime."},
+  // --- Peçenek ---
+  {word: "egetlig", meaning: "Gelin veya evlilikle ilişkili kadın", today: "Gelin", status: "rare", region: "pecenek", note: "Aile terimi."},
+  {word: "baldır kız", meaning: "Üvey kız", today: "Üvey kız", status: "rare", region: "pecenek", note: "Akrabalık terimi."},
+  {word: "namıja", meaning: "Kadının eniştesi", today: "Enişte", status: "rare", region: "pecenek", note: "Akrabalık adı."},
+  {word: "burunduk", meaning: "yular", today: "Yular", status: "rare", region: "pecenek", note: "Koşum takımı."},
+  {word: "koldaşlan-", meaning: "arkadaş olmak", today: "Arkadaş olmak", status: "rare", region: "pecenek", note: "Eski fiil."},
+  {word: "kümüş", meaning: "gümüş", today: "Gümüş", status: "changed", region: "pecenek", note: "Ses değişimi gösterir."},
 
-  // Tuhsi
-  {word:"tengri", meaning:"gök, tanrı", today:"tanrı", status:"changed", region:"tuhsi", note:"İnanç sistemi söz varlığı."},
-  {word:"yıldız", meaning:"yıldız", today:"yıldız", status:"living", region:"tuhsi", note:"Gök cismi."},
-  {word:"yel", meaning:"rüzgâr", today:"yel", status:"living", region:"tuhsi", note:"Doğa olayı."},
-  {word:"yağmur", meaning:"yağmur", today:"yağmur", status:"living", region:"tuhsi", note:"Doğa olayı."},
-  {word:"kar", meaning:"kar", today:"kar", status:"living", region:"tuhsi", note:"Doğa olayı."}
+  // --- Tuhsi ---
+  {word: "ötünç", meaning: "ödünç; borç alınan şey", today: "Ödünç", status: "changed", region: "tuhsi", note: "Günlük dilde yaşar."},
+  {word: "kek", meaning: "sıkıntı, mihnet", today: "—", status: "rare", region: "tuhsi", note: "Günümüzdeki 'kek' kelimesinden farklı."},
+  {word: "tang", meaning: "şaşılacak şey, hayret", today: "Hayret", status: "rare", region: "tuhsi", note: "Eski duygu sözü."},
+  {word: "yel", meaning: "rüzgâr", today: "Yel", status: "living", region: "tuhsi", note: "Doğa olayı."},
+  {word: "yağmur", meaning: "Yağmur", today: "Yağmur", status: "living", region: "tuhsi", note: "Doğa olayı."},
+  {word: "kar", meaning: "Kar", today: "Kar", status: "living", region: "tuhsi", note: "Doğa olayı."},
+
+  // --- Orta Asya (Genel Coğrafi Referans) ---
+  {word: "Ud", meaning: "Sığır, öküz", today: "Sığır, öküz", status: "rare", region: "ortaasya", note: "Genel Türk dili coğrafyası kelimesi."},
+  {word: "Bars", meaning: "Pars veya leopar", today: "Pars", status: "rare", region: "ortaasya", note: "Bozkır hayvan adı."},
+  {word: "Tavışgan", meaning: "Tavşan", today: "Tavşan", status: "changed", region: "ortaasya", note: "Ses değişimi gösteren hayvan adı."},
+  {word: "Yund", meaning: "At", today: "At (tarihî)", status: "rare", region: "ortaasya", note: "Eski at adı."},
+  {word: "Takagu", meaning: "Tavuk", today: "Tavuk", status: "changed", region: "ortaasya", note: "Tarihî kümes hayvanı adı."},
+  {word: "It", meaning: "Köpek", today: "İt", status: "rare", region: "ortaasya", note: "Bazı lehçe ve ağızlarda yaşar."},
+  {word: "Toŋuz", meaning: "Domuz", today: "Domuz", status: "changed", region: "ortaasya", note: "Tarihî biçim."},
+  {word: "Küç", meaning: "Güç, kuvvet", today: "Güç", status: "changed", region: "ortaasya", note: "Ses değişimi gösteren soyut kavram."}
 ];
 
 const map = L.map("map").setView([45, 67], 4);
@@ -319,8 +406,14 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 const markerByRegion = {};
+const regionFilterSelect = document.getElementById("regionFilter");
 
 regions.forEach(region => {
+  const opt = document.createElement("option");
+  opt.value = region.id;
+  opt.textContent = region.name;
+  regionFilterSelect.appendChild(opt);
+
   const marker = L.circleMarker(region.coords, {
     radius: 9,
     color: "#713719",
@@ -331,13 +424,20 @@ regions.forEach(region => {
 
   marker.bindTooltip(region.name);
 
+  const regWords = words.filter(w => w.region === region.id);
+  const wordsHtml = regWords.slice(0, 5).map(w => `<li><b>${w.word}</b>: ${w.meaning}</li>`).join("");
+  const moreText = regWords.length > 5 ? `<br><i>ve ${regWords.length - 5} kelime daha...</i>` : "";
+
   marker.bindPopup(`
     <div class="popup">
       <h3>${region.name}</h3>
+      <p><b>Günümüzde:</b> ${region.modern}</p>
       <p>${region.description}</p>
-      <b>Günümüzde:</b> ${region.modern}
+      <b>Örnek Kelimeler:</b>
+      <ul>${wordsHtml}</ul>
+      ${moreText}
     </div>
-  `);
+  `, {maxWidth: 320});
 
   marker.on("click", () => showRegion(region.id));
   markerByRegion[region.id] = marker;
@@ -363,6 +463,15 @@ function getRegion(id) {
   return regions.find(r => r.id === id);
 }
 
+function statusText(status) {
+  const labels = {
+    rare: "Günümüzde az kullanılan / tarihî",
+    living: "Günümüzde yaşayan",
+    changed: "Biçimi veya anlamı değişen"
+  };
+  return labels[status] || "Belirtilmemiş";
+}
+
 function showWord(item) {
   const region = getRegion(item.region);
 
@@ -370,24 +479,17 @@ function showWord(item) {
     <h3>${escapeHTML(item.word)}</h3>
     <b>Anlamı:</b> ${escapeHTML(item.meaning)}<br>
     <b>Günümüzdeki karşılığı:</b> ${escapeHTML(item.today)}<br>
-    <b>Kullanım durumu:</b> ${statusText(item.status)}<br>
-    <b>Açıklama:</b> ${escapeHTML(item.note)}<br><br>
-    <b>İncelenen tarihî bölge:</b> ${escapeHTML(region.name)}<br>
-    <b>Günümüzde:</b> ${escapeHTML(region.modern)}<br>
-    <small>Bu eşleştirme kelimenin kesin kökenini kanıtlamaz.</small>
+    <b>Kullanım durumu:</b> ${escapeHTML(statusText(item.status))}<br>
+    <b>Açıklama / Not:</b> ${escapeHTML(item.note)}<br><br>
+    <b>İlişkilendirilen Bölge:</b> ${escapeHTML(region.name)}<br>
+    <b>Günümüzdeki Coğrafya:</b> ${escapeHTML(region.modern)}<br>
+    <small style="display:block; margin-top:5px; color:#665744;">Haritadaki konum, kelimenin sadece bu coğrafyada ortaya çıktığını kanıtlamaz; eserdeki boy dağılımını yansıtır.</small>
   `;
 
-  map.setView(region.coords, 5);
-  markerByRegion[region.id].openPopup();
-}
-
-function statusText(status) {
-  const labels = {
-    rare: "Günümüzde az kullanılan / tarihî",
-    living: "Günümüzde yaşayan",
-    changed: "Biçimi veya anlamı değişmiş"
-  };
-  return labels[status] || "Belirtilmemiş";
+  if (region && markerByRegion[region.id]) {
+    map.setView(region.coords, 5);
+    markerByRegion[region.id].openPopup();
+  }
 }
 
 function showRegion(id) {
@@ -396,56 +498,67 @@ function showRegion(id) {
 
   detail.innerHTML = `
     <h3>${escapeHTML(region.name)}</h3>
-    ${escapeHTML(region.description)}<br>
-    <b>Günümüzdeki coğrafya:</b> ${escapeHTML(region.modern)}<br><br>
-    <b>İncelenecek kelimeler</b>
-    <ul>
-      ${regionWords.map(w =>
-        `<li><a href="#" data-word="${escapeHTML(w.word)}">
-          ${escapeHTML(w.word)}</a> — ${escapeHTML(w.meaning)}</li>`
-      ).join("")}
+    <p>${escapeHTML(region.description)}</p>
+    <b>Günümüzdeki Coğrafya:</b> ${escapeHTML(region.modern)}<br><br>
+    <b>Bu Bölgeyle İlişkilendirilen Kelimeler (${regionWords.length}):</b>
+    <ul style="max-height: 160px; overflow-y: auto; margin: 5px 0 0 15px; padding: 0;">
+      ${regionWords.map(w => `
+        <li style="margin-bottom: 4px;">
+          <a href="#" data-word="${escapeHTML(w.word)}" data-region="${escapeHTML(w.region)}" style="color: #823c1e; font-weight: bold; text-decoration: none;">
+            ${escapeHTML(w.word)}
+          </a> — ${escapeHTML(w.meaning)}
+        </li>
+      `).join("")}
     </ul>
   `;
 
   detail.querySelectorAll("[data-word]").forEach(link => {
     link.addEventListener("click", event => {
       event.preventDefault();
-      const item = words.find(w => w.word === link.dataset.word && w.region === id);
+      const item = words.find(w => w.word === link.dataset.word && w.region === link.dataset.region);
       if (item) showWord(item);
     });
   });
 
-  search.value = "";
+  regionFilterSelect.value = id;
   render();
 }
 
 function render() {
   const query = search.value.trim().toLocaleLowerCase("tr-TR");
-  const selected = filter.value;
+  const selectedStatus = filter.value;
+  const selectedRegion = regionFilterSelect.value;
 
   const filtered = words.filter(w => {
-    const matchesText = [
-      w.word, w.meaning, w.today, w.note,
-      getRegion(w.region).name
-    ].join(" ").toLocaleLowerCase("tr-TR").includes(query);
+    const region = getRegion(w.region);
+    const searchable = [
+      w.word,
+      w.meaning,
+      w.today,
+      w.note,
+      region.name,
+      region.modern
+    ].join(" ").toLocaleLowerCase("tr-TR");
 
-    const matchesFilter = selected === "all" || w.status === selected;
-    return matchesText && matchesFilter;
+    const matchesText = searchable.includes(query);
+    const matchesStatus = selectedStatus === "all" || w.status === selectedStatus;
+    const matchesRegion = selectedRegion === "all" || w.region === selectedRegion;
+
+    return matchesText && matchesStatus && matchesRegion;
   });
 
   count.textContent = `${filtered.length} kelime gösteriliyor`;
 
   list.innerHTML = filtered.map(w => `
-    <div class="word" role="button" tabindex="0"
+    <div class="word-card" role="button" tabindex="0"
       data-word="${escapeHTML(w.word)}" data-region="${escapeHTML(w.region)}">
-      <strong>${escapeHTML(w.word)}</strong>
-      — ${escapeHTML(w.meaning)}
-      <small>${escapeHTML(getRegion(w.region).name)}</small>
-      <small>${escapeHTML(statusText(w.status))}</small>
+      <strong>${escapeHTML(w.word)}</strong> — ${escapeHTML(w.meaning)}
+      <small>📍 ${escapeHTML(getRegion(w.region).name)}</small>
+      <small>🏷️ ${escapeHTML(statusText(w.status))}</small>
     </div>
-  `).join("") || "<p>Sonuç bulunamadı.</p>";
+  `).join("") || "<p style=\"padding:10px; color:#665744;\">Sonuç bulunamadı.</p>";
 
-  list.querySelectorAll(".word").forEach(el => {
+  list.querySelectorAll(".word-card").forEach(el => {
     const activate = () => {
       const item = words.find(w => w.word === el.dataset.word && w.region === el.dataset.region);
       if (item) showWord(item);
@@ -463,8 +576,18 @@ function render() {
 
 search.addEventListener("input", render);
 filter.addEventListener("change", render);
+regionFilterSelect.addEventListener("change", () => {
+  const regId = regionFilterSelect.value;
+  if (regId !== "all" && markerByRegion[regId]) {
+    const reg = getRegion(regId);
+    map.setView(reg.coords, 5);
+    markerByRegion[regId].openPopup();
+  }
+  render();
+});
 
 render();
 </script>
+
 </body>
 </html>
